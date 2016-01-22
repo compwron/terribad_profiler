@@ -1,4 +1,5 @@
 require 'timecop'
+require 'pry'
 Dir.glob("lib/**/*").each do |file_path|
   require_relative "../#{file_path}" unless File.directory?(file_path)
 end
