@@ -1,3 +1,6 @@
-0..2 do |i|
-  i
+a = true
+if a
+  1
+else
+  2
 end

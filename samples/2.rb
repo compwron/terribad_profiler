@@ -1,6 +1,3 @@
-a = true
-if a
-  1
-else
-  2
+0.upto(2).each do |i|
+  i
 end
