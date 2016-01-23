@@ -1,6 +1,4 @@
-a = true
-if a
-  1
-else
-  2
+def tired
+  sleep 1
 end
+tired

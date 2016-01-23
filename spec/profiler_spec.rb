@@ -30,4 +30,15 @@ describe Profiler do
       expect(subject[2][:time_after_line].size).to be 1
     end
   end
+
+  context "run time per line" do
+    let(:example) { "samples/3.rb" }
+    let(:profiler) { described_class.new(example) }
+    subject { profiler.profile! ; profiler.info(2) }
+    it "derives runtime of line per run and total" do
+      expect(subject[:execution_count]).to eq 1
+      expect(subject[:avg_execution_time]).to be_within(0.1).of(1)
+      expect(subject[:total_execution_time]).to be_within(0.1).of(1)
+    end
+  end
 end

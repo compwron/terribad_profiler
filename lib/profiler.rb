@@ -15,6 +15,19 @@ class Profiler
     @annotation_data = parse(annotation_output.split("\n"))
   end
 
+  def info(line_number)
+    data = @annotation_data[line_number]
+    total_execution_time = data[:time_before_line].sort.zip(data[:time_after_line].sort).map {|pair|
+      if pair.include?(nil)
+        0
+      else
+        pair.first - pair.last
+      end
+    }.inject(&:+)
+    avg_execution_time = total_execution_time / data[:execution_count]
+    {execution_count: data[:execution_count], avg_execution_time: avg_execution_time, total_execution_time: total_execution_time}
+  end
+
   private
 
   def annotate(file_contents)
