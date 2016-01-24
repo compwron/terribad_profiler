@@ -15,15 +15,7 @@ class Profiler
 
   def info(line_number)
     data = @annotation_data[line_number] || {}
-    # binding.pry
-    total_execution_time = ((data[:time_before_line] || []).sort.zip((data[:time_after_line] || []).sort) || []).map {|pair|
-      if pair.include?(nil)
-        0
-      else
-        pair.first - pair.last
-      end
-
-    }.inject(&:+)
+    total_execution_time = sum_diff(data)
     if total_execution_time && total_execution_time < 0
       total_execution_time = total_execution_time * -1
     end
@@ -37,9 +29,8 @@ class Profiler
     {execution_count: data[:execution_count], avg_execution_time: avg_execution_time, total_execution_time: total_execution_time}
   end
 
-  def overview # todo: make this a different layer
+  def overview
     profile!
-    # TODO make this per codebase, not per file
     a = @original_file_contents.split("\n")
     max_length = a.map {|l| l.length }.max + 10
 
@@ -91,6 +82,17 @@ class Profiler
   end
 
   private
+
+  def sum_diff(data)
+    ((data[:time_before_line] || []).sort.zip((data[:time_after_line] || []).sort) || []).map {|pair|
+      if pair.include?(nil)
+        0
+      else
+        pair.first - pair.last
+      end
+
+    }.inject(&:+)
+  end
 
   def new_filepath
     "tmp/annotated_#{@original_filename}"
