@@ -39,7 +39,7 @@ class ProfileView
   end
 
   def generate_html
-    lines = @original_file_contents.split("\n")
+    lines = @original_file_contents
     max_length = lines.map {|l| l.length }.max + 10
 
     ad = @annotation_data

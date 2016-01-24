@@ -2,15 +2,15 @@ require 'markaby'
 class Profiler
   def initialize(filepath)
     @original_filename = File.basename(filepath)
-    @original_file_contents = File.read(filepath)
+    @original_file_contents = File.read(filepath).split("\n")
   end
 
   def profile!
     File.open(new_filepath, "w") {|f|
       f.write annotate(@original_file_contents).join("\n")
     }
-    annotation_output = `ruby #{new_filepath}`
-    @annotation_data = parse(annotation_output.split("\n"))
+    annotation_output = `ruby #{new_filepath}`.split("\n")
+    @annotation_data = parse(annotation_output)
   end
 
   def info(line_number)
@@ -50,9 +50,9 @@ class Profiler
   end
 
   def annotate(file_contents)
-    contents = file_contents.split("\n")
+    contents = file_contents
     annotated_contents = []
-    contents.each_with_index {|line, line_number|
+    file_contents.each_with_index {|line, line_number|
       annotated_contents << anno(line, line_number)
     }
     annotated_contents
