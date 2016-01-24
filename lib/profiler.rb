@@ -3,7 +3,6 @@ require_relative "file_contents"
 class Profiler
   def initialize(filepath)
     @original_filename = File.basename(filepath)
-    p '1' * 100
     @original_file_contents = File.read(filepath)
     FileContents.set(@original_filename, @original_file_contents)
   end
@@ -30,9 +29,9 @@ class Profiler
       end
 
     }.inject(&:+)
-    # if total_execution_time < 0
-    #   total_execution_time = total_execution_time * -1
-    # end
+    if total_execution_time && total_execution_time < 0
+      total_execution_time = total_execution_time * -1
+    end
 
     ec = data[:execution_count]
     if ec && ec > 0
