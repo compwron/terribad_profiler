@@ -41,4 +41,13 @@ describe Profiler do
       expect(subject[:total_execution_time]).to be_within(0.1).of(1)
     end
   end
+
+  context "pretty formatting" do
+    let(:example) { "samples/4.rb" }
+    let(:profiler) { described_class.new(example) }
+    subject { profiler.overview }
+    it "creates colored html" do
+      expect(subject).to eq "some html"
+    end
+  end
 end
