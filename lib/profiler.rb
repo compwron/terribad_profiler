@@ -14,18 +14,16 @@ class Profiler
   end
 
   def info(line_number)
-    data = @annotation_data[line_number] || {}
+    data = @annotation_data[line_number]
+    if data.nil? || data[:execution_count] == 0
+      return {execution_count: 0, avg_execution_time: -1, total_execution_time: -1}
+    end
     total_execution_time = sum_diff(data)
     if total_execution_time && total_execution_time < 0
       total_execution_time = total_execution_time * -1
     end
 
-    ec = data[:execution_count]
-    if ec && ec > 0
-      avg_execution_time = total_execution_time / data[:execution_count]
-    else
-      avg_execution_time = -1
-    end
+    avg_execution_time = total_execution_time / data[:execution_count]
     {execution_count: data[:execution_count], avg_execution_time: avg_execution_time, total_execution_time: total_execution_time}
   end
 
