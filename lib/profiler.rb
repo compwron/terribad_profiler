@@ -1,10 +1,8 @@
 require 'markaby'
-require_relative "file_contents"
 class Profiler
   def initialize(filepath)
     @original_filename = File.basename(filepath)
     @original_file_contents = File.read(filepath)
-    FileContents.set(@original_filename, @original_file_contents)
   end
 
   def profile!
