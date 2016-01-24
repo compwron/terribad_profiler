@@ -43,12 +43,25 @@ describe Profiler do
   end
 
   context "pretty formatting" do
-    let(:example) { "samples/4.rb" }
-    let(:profiler) { described_class.new(example) }
+
+    context "simple example" do
+      let(:profiler) { described_class.new(example) }
     subject { profiler.overview }
-    let(:so_much_html) {  "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/><title> analysis</title><style type=\"text/css\">\n            body { font: 11px/120% Courier, sans-serif }\n          </style></head><body><h1>Analysis</h1><font color=\"green\"/>a = false................................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"red\"/>if a........................................ execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>..puts \"this line does not happen\".......... execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>end......................................... execution count: 0 avg_execution_time: -1<br/><font color=\"green\"/>b = \"cat\"................................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>sleep 1..................................... execution count: 1 avg_execution_time: 1.0<br/><font color=\"green\"/>puts b...................................... execution count: 1 avg_execution_time: 0.0<br/></body></html>" }
-    it "creates colored html" do
-      expect(subject).to eq so_much_html
+      let(:example) { "samples/4.rb" }
+      let(:so_much_html) {  "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/><title> analysis</title><style type=\"text/css\">\n            body { font: 11px/120% Courier, sans-serif }\n          </style></head><body><h1>Analysis</h1><font color=\"green\"/>a = false................................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"red\"/>if a........................................ execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>..puts \"this line does not happen\".......... execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>end......................................... execution count: 0 avg_execution_time: -1<br/><font color=\"green\"/>b = \"cat\"................................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>sleep 1..................................... execution count: 1 avg_execution_time: 1.0<br/><font color=\"green\"/>puts b...................................... execution count: 1 avg_execution_time: 0.0<br/></body></html>" }
+      it "creates colored html" do
+        expect(subject).to eq so_much_html
+      end
+    end
+
+    context "with class" do
+      let(:profiler) { described_class.new(example) }
+    subject { profiler.overview }
+      let(:example) { "samples/5.rb" }
+      let(:expected_html) {"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/><title> analysis</title><style type=\"text/css\">\n            body { font: 11px/120% Courier, sans-serif }\n          </style></head><body><h1>Analysis</h1><font color=\"green\"/>a = false................................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"red\"/>if a........................................ execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>..puts \"this line does not happen\".......... execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>end......................................... execution count: 0 avg_execution_time: -1<br/><font color=\"green\"/>b = \"cat\"................................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>sleep 1..................................... execution count: 1 avg_execution_time: 1.0<br/><font color=\"green\"/>puts b...................................... execution count: 1 avg_execution_time: 0.0<br/></body></html>"}
+      it "still reports good data" do
+        expect(subject).to eq expected_html
+      end
     end
   end
 end
