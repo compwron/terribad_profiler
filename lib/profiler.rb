@@ -29,54 +29,7 @@ class Profiler
 
   def overview
     profile!
-    lines = @original_file_contents.split("\n")
-    max_length = lines.map {|l| l.length }.max + 10
-
-    ad = @annotation_data
-    line_times = lines.each_with_index.map {|_, i| info(i)[:avg_execution_time] }
-    mab = Markaby::Builder.new
-
-    mab.html do
-      mab.head do
-        mab.title "#{@original_filename} analysis"
-        style :type => "text/css" do
-          %[
-            body { font: 11px/120% Courier, sans-serif }
-          ]
-        end
-      end
-      mab.body do
-        mab.h1 "Analysis"
-        lines.each_with_index {|line, line_number|
-          leading_whitespace_size = 0
-
-          m = /^\s+/.match(line)
-          if m
-            leading_whitespace_size = m[0].size
-          end
-          0.upto(leading_whitespace_size - 1).each {|i| line[i] = "."}
-          execution_count = 0
-          if ad[line_number]
-            execution_count = ad[line_number][:execution_count]
-          end
-          if execution_count > 0
-            mab.font(color: "green")
-          else
-            mab.font(color: "red")
-          end
-          line_with_data = "#{line.ljust(max_length, ".")} execution count: #{execution_count} avg_execution_time: #{line_times[line_number]}"
-          mab.text(line_with_data)
-
-          mab.br
-        }
-      end
-    end
-
-    results_filename = "tmp/html/overview_#{@original_filename}.html"
-    File.open(results_filename, "w") do |f|
-      f.write(mab.to_s)
-    end
-    File.read(results_filename)
+    ProfileView.new(@original_file_contents, @annotation_data, @original_filename).overview
   end
 
   private
