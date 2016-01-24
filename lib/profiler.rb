@@ -6,12 +6,9 @@ class Profiler
   end
 
   def profile!
-    new_filepath = "tmp/annotated_#{@original_filename}"
-    code_with_annotations = annotate(@original_file_contents)
     File.open(new_filepath, "w") {|f|
-      f.write code_with_annotations.join("\n")
+      f.write annotate(@original_file_contents).join("\n")
     }
-    a = File.read(new_filepath)
     annotation_output = `ruby #{new_filepath}`
     @annotation_data = parse(annotation_output.split("\n"))
   end
@@ -94,6 +91,10 @@ class Profiler
   end
 
   private
+
+  def new_filepath
+    "tmp/annotated_#{@original_filename}"
+  end
 
   def annotate(file_contents)
     contents = file_contents.split("\n")
