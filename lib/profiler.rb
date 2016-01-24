@@ -29,13 +29,13 @@ class Profiler
 
   def overview
     profile!
-    a = @original_file_contents.split("\n")
-    max_length = a.map {|l| l.length }.max + 10
+    lines = @original_file_contents.split("\n")
+    max_length = lines.map {|l| l.length }.max + 10
 
     ad = @annotation_data
-    line_times = a.each_with_index.map {|_, i| info(i)[:avg_execution_time] }
+    line_times = lines.each_with_index.map {|_, i| info(i)[:avg_execution_time] }
     mab = Markaby::Builder.new
-    # p a
+
     mab.html do
       mab.head do
         mab.title "#{@original_filename} analysis"
@@ -47,7 +47,7 @@ class Profiler
       end
       mab.body do
         mab.h1 "Analysis"
-        a.each_with_index {|line, line_number|
+        lines.each_with_index {|line, line_number|
           leading_whitespace_size = 0
 
           m = /^\s+/.match(line)
@@ -71,7 +71,7 @@ class Profiler
         }
       end
     end
-    # puts mab.to_s
+
     results_filename = "tmp/html/overview_#{@original_filename}.html"
     File.open(results_filename, "w") do |f|
       f.write(mab.to_s)
