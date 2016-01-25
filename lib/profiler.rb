@@ -29,10 +29,18 @@ class Profiler
 
   def overview
     profile!
-    ProfileView.new(@original_file_contents, @annotation_data, @original_filename).overview
+    html = ProfileView.new(@original_file_contents, @annotation_data, @original_filename).overview
+    File.open(results_filename, "w") do |f|
+      f.write(html)
+    end
+    html
   end
 
   private
+
+  def results_filename
+    "tmp/html/overview_#{@original_filename}.html"
+  end
 
   def sum_diff(data)
     ((data[:time_before_line] || []).sort.zip((data[:time_after_line] || []).sort) || []).map {|pair|

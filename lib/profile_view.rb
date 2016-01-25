@@ -81,11 +81,6 @@ class ProfileView
         }
       end
     end
-
-    results_filename = "tmp/html/overview_#{@original_filename}.html"
-    File.open(results_filename, "w") do |f|
-      f.write(mab.to_s)
-    end
-    File.read(results_filename)
+    mab.to_s
   end
 end
