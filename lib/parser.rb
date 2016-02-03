@@ -15,18 +15,22 @@ class Parser
         if is_annotation_output?(line)
           line_number = line_number(line)
           annotation_data[line_number] ||= default_data
-
-          if line.include?(BEFORE)
-            annotation_data[line_number][:time_before_line] << time(line)
-          elsif line.include?(AFTER)
-            annotation_data[line_number][:time_after_line] << time(line)
-          end
+          key, time = time_key(line)
+          annotation_data[line_number][key] << time
         end
       end
     }.map {|k, v|
       v[:execution_count] = [v[:time_before_line].count, v[:time_after_line].count].min
       {k => v}
     }.inject(&:merge)
+  end
+
+  def time_key(line)
+    if line.include?(BEFORE)
+      [:time_before_line, time(line)]
+    elsif line.include?(AFTER)
+      [:time_after_line, time(line)]
+    end
   end
 
   def time(line)
