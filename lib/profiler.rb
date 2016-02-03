@@ -1,4 +1,4 @@
-require 'markaby'
+require "markaby"
 require_relative "parser"
 require_relative "profile_view"
 

@@ -34,7 +34,7 @@ describe Profiler do
   context "pretty formatting" do
     context "simple example" do
       let(:profiler) { described_class.new(example) }
-    subject { profiler.overview }
+      subject { profiler.overview }
       let(:example) { "samples/4.rb" }
       let(:so_much_html) {  "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/><title> analysis</title><style type=\"text/css\">\n            body { font: 11px/120% Courier, sans-serif }\n          </style></head><body><h1>Analysis</h1><font color=\"green\"/>a = false................................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"red\"/>if a........................................ execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>..puts \"this line does not happen\".......... execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>end......................................... execution count: 0 avg_execution_time: -1<br/><font color=\"green\"/>b = \"cat\"................................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>sleep 1..................................... execution count: 1 avg_execution_time: 1.0<br/><font color=\"green\"/>puts b...................................... execution count: 1 avg_execution_time: 0.0<br/></body></html>" }
       it "creates colored html" do
@@ -44,7 +44,7 @@ describe Profiler do
 
     context "with class" do
       let(:profiler) { described_class.new(example) }
-    subject { profiler.overview }
+      subject { profiler.overview }
       let(:example) { "samples/5.rb" }
       let(:expected_html) {"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/><title> analysis</title><style type=\"text/css\">\n            body { font: 11px/120% Courier, sans-serif }\n          </style></head><body><h1>Analysis</h1><font color=\"green\"/>class Foo................. execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>..def bar(a).............. execution count: 1 avg_execution_time: 0.0<br/><font color=\"red\"/>....if a > 1.............. execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>......1................... execution count: 0 avg_execution_time: -1<br/><font color=\"red\"/>....else.................. execution count: 0 avg_execution_time: -1<br/><font color=\"green\"/>......2................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>....end................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>..end..................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>end....................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>.......................... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/>Foo.new.bar(-1)........... execution count: 1 avg_execution_time: 0.0<br/><font color=\"green\"/># Foo.new.bar(5).......... execution count: 1 avg_execution_time: 0.0<br/></body></html>"}
       it "still reports good data" do

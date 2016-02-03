@@ -10,23 +10,24 @@ class Parser
   private
 
   def parse(output)
-    annotation_data = {}
-    output.each {|line|
-      if is_annotation_output?(line)
-        line_number = line.split(",")[0].split(":")[1].to_i
-        annotation_data[line_number] ||= {time_before_line: [], time_after_line: [], execution_count: 0}
-        timesstamp = line.split(",")[2]
-        if line.include?(BEFORE)
-          annotation_data[line_number][:time_before_line] << Time.parse(timesstamp)
-        elsif line.include?(AFTER)
-          annotation_data[line_number][:time_after_line] << Time.parse(timesstamp)
+    a = {}.tap do |annotation_data|
+    output.each do |line|
+        if is_annotation_output?(line)
+          line_number = line.split(",")[0].split(":")[1].to_i
+          annotation_data[line_number] ||= {time_before_line: [], time_after_line: [], execution_count: 0}
+          timesstamp = line.split(",")[2]
+          if line.include?(BEFORE)
+            annotation_data[line_number][:time_before_line] << Time.parse(timesstamp)
+          elsif line.include?(AFTER)
+            annotation_data[line_number][:time_after_line] << Time.parse(timesstamp)
+          end
         end
       end
-    }
-    annotation_data.each {|k, v|
+    end
+    a.each {|k, v|
       v[:execution_count] = [v[:time_before_line].count, v[:time_after_line].count].min
     }
-    annotation_data
+    a
   end
 
   def is_annotation_output?(line)
