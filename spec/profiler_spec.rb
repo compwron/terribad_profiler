@@ -1,6 +1,5 @@
 describe Profiler do
   subject { described_class.new(example).profile! }
-  let(:time) { Time.utc(2016, 1, 21) }
 
   context "with one line example" do
     let(:example) { "samples/1.rb" }
