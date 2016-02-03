@@ -13,16 +13,22 @@ class Parser
     {}.tap { |annotation_data|
       output.each do |line|
         if is_annotation_output?(line)
-          line_number = line_number(line)
-          annotation_data[line_number] ||= default_data
-          key, time = time_key(line)
-          annotation_data[line_number][key] << time
+          ln, data = data(annotation_data, line)
+          annotation_data[ln] = data
         end
       end
     }.map {|k, v|
       v[:execution_count] = [v[:time_before_line].count, v[:time_after_line].count].min
       {k => v}
     }.inject(&:merge)
+  end
+
+  def data(annotation_data, line)
+    d = annotation_data[ln = line_number(line)]
+    d ||= default_data
+    key, time = time_key(line)
+    d[key] << time
+    [ln, d]
   end
 
   def time_key(line)
