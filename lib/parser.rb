@@ -17,7 +17,7 @@ class Parser
           annotation_data[ln] = data
         end
       end
-    }.map {|k, v|
+    }.map { |k, v|
       v[:execution_count] = [v[:time_before_line].count, v[:time_after_line].count].min
       {k => v}
     }.inject(&:merge)
