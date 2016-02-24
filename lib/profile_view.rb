@@ -21,7 +21,7 @@ class ProfileView
       if tet && tet < 0
         tet = tet * -1
       end
-       tet / data[:execution_count]
+       "%.10f" % (tet / data[:execution_count])
     else
       -1
     end

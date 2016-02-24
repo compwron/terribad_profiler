@@ -37,7 +37,7 @@ class Profiler
       total_execution_time = total_execution_time * -1
     end
 
-    avg_execution_time = total_execution_time / data[:execution_count]
+    avg_execution_time = total_execution_time.to_d / data[:execution_count]
     {execution_count: data[:execution_count], avg_execution_time: avg_execution_time, total_execution_time: total_execution_time}
   end
 
@@ -71,9 +71,9 @@ class Profiler
 
   def anno(line, line_number)
     [
-      "puts \"line_number:#{line_number},BEFORE,#\{Time.now.utc\}\"",
+      "puts \"line_number:#{line_number},BEFORE,#\{Time.now.to_f\}\"",
       "#{line}",
-      "puts \"line_number:#{line_number},AFTER,#\{Time.now.utc\}\""
+      "puts \"line_number:#{line_number},AFTER,#\{Time.now.to_f\}\""
     ].join("\n")
   end
 end

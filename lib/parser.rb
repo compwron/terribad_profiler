@@ -40,7 +40,7 @@ class Parser
   end
 
   def time(line)
-    Time.parse(line.split(",")[2])
+    line.split(",")[2].to_f
   end
 
   def line_number(line)
