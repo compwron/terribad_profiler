@@ -10,29 +10,18 @@ class Parser
   private
 
   def parse(output)
-    annotation_data = {}
-    output.select {|line|
-      is_annotation_output?(line)
-    }.each { |line|
-      d = annotation_data[ln = line_number(line)]
-      d ||= default_data
-      key, time = time_key(line)
-      d[key] << time
-      annotation_data[ln] = d
+    {}.tap { |annotation_data|
+      output.select{|line| is_annotation_output?(line)}.each {|line|
+        ln = line_number(line)
+        annotation_data[ln] ||= default_data
+        key = line.include?(BEFORE) ? :time_before_line : :time_after_line
+        annotation_data[ln][key] << time(line)
+        annotation_data[ln][:execution_count] += 1 if key == :time_after_line
+      }
     }
+    # broken
+    # use this  v[:execution_count] = [v[:time_before_line].count, v[:time_after_line].count].min
 
-    annotation_data.map { |k, v|
-      v[:execution_count] = [v[:time_before_line].count, v[:time_after_line].count].min
-      {k => v}
-    }.inject(&:merge)
-  end
-
-  def time_key(line)
-    if line.include?(BEFORE)
-      [:time_before_line, time(line)]
-    elsif line.include?(AFTER)
-      [:time_after_line, time(line)]
-    end
   end
 
   def time(line)
@@ -51,3 +40,4 @@ class Parser
     line.include?(BEFORE) || line.include?(AFTER)
   end
 end
+
