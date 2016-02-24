@@ -10,25 +10,21 @@ class Parser
   private
 
   def parse(output)
-    {}.tap { |annotation_data|
-      output.each do |line|
-        if is_annotation_output?(line)
-          ln, data = data(annotation_data, line)
-          annotation_data[ln] = data
-        end
-      end
-    }.map { |k, v|
+    annotation_data = {}
+    output.select {|line|
+      is_annotation_output?(line)
+    }.each { |line|
+      d = annotation_data[ln = line_number(line)]
+      d ||= default_data
+      key, time = time_key(line)
+      d[key] << time
+      annotation_data[ln] = d
+    }
+
+    annotation_data.map { |k, v|
       v[:execution_count] = [v[:time_before_line].count, v[:time_after_line].count].min
       {k => v}
     }.inject(&:merge)
-  end
-
-  def data(annotation_data, line)
-    d = annotation_data[ln = line_number(line)]
-    d ||= default_data
-    key, time = time_key(line)
-    d[key] << time
-    [ln, d]
   end
 
   def time_key(line)
