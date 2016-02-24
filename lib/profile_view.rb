@@ -13,11 +13,32 @@ class ProfileView
   private
 
   def generate_html
-    html(@original_file_contents,
-         avg_execution_times,
-         @annotation_data,
-         max_line_length,
-         Markaby::Builder.new)
+    fill_html_generator(Markaby::Builder.new, analysis_title, data_lines_with_colors)
+
+    # html(@original_file_contents,
+    #      avg_execution_times,
+    #      @annotation_data,
+    #      max_line_length,
+    #      Markaby::Builder.new)
+  end
+
+  def replace_leading_whitespace_with_dots(line)
+    0.upto(line[/\A */].size - 1).each { |i| line[i] = "." }
+  end
+
+  def data_lines_with_colors
+    @original_file_contents.each_with_index.map { |line, line_number|
+      replace_leading_whitespace_with_dots(line)
+
+      execution_count = (@annotation_data[line_number] || {})[:execution_count] || 0
+      color = execution_count > 0 ? "green" : "red"
+      line = "#{line.ljust(max_line_length, ".")} execution count: #{execution_count} avg_execution_time: #{avg_execution_times[line_number]}"
+      [line, color]
+    }
+  end
+
+  def leading_whitespace_size(line)
+    0.upto(line[/\A */].size - 1).each { |i| line[i] = "." }
   end
 
   def html(lines, line_times, ad, max_length, mab)
@@ -50,6 +71,7 @@ class ProfileView
             mab.font(color: "red")
           end
           line_with_data = "#{line.ljust(max_length, ".")} execution count: #{execution_count} avg_execution_time: #{line_times[line_number]}"
+
           mab.text(line_with_data)
 
           mab.br
@@ -57,6 +79,33 @@ class ProfileView
       end
     end
     mab.to_s
+  end
+
+  def fill_html_generator(mab, title, data_lines_with_colors)
+    mab.html do
+      mab.head do
+        mab.title title
+        style :type => "text/css" do
+          %[
+            body { font: 11px/120% Courier, sans-serif }
+          ]
+        end
+      end
+      mab.body do
+        mab.h1 title
+        data_lines_with_colors.each {|line, color|
+          # binding.pry
+          mab.font(color: color)
+          mab.text(line)
+          mab.br
+        }
+      end
+    end
+    mab.to_s
+  end
+
+  def analysis_title
+    [@original_filename, "Analysis"].join(" ")
   end
 
   def avg_execution_times
@@ -75,7 +124,7 @@ class ProfileView
   end
 
   def max_line_length
-    @original_file_contents.map(&:length).max + 10
+    @max_line_length ||= @original_file_contents.map(&:length).max + 10
   end
 
   def total_execution_time(data)

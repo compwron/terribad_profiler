@@ -10,3 +10,5 @@ What about code that is only sometimes not executed? How do we get average time?
 Don't execute / report comments
 
 Check code duplication
+
+pad execution_count display
