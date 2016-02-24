@@ -11,7 +11,7 @@ class Parser
 
   def parse(output)
     {}.tap { |annotation_data|
-      output.select{|line| is_annotation_output?(line)}.each {|line|
+      output.select { |line| is_annotation_output?(line) }.each { |line|
         ln = line_number(line)
         annotation_data[ln] ||= default_data
         key = line.include?(BEFORE) ? :time_before_line : :time_after_line
@@ -22,7 +22,7 @@ class Parser
   end
 
   def set_execution_counts(annotation_data)
-    annotation_data.each {|line_number, data|
+    annotation_data.each { |line_number, data|
       data[:execution_count] = [data[:time_before_line].count, data[:time_after_line].count].min
     }
   end
