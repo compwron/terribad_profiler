@@ -13,13 +13,10 @@ class ProfileView
   private
 
   def generate_html
-    lines = @original_file_contents
-    max_length = lines.map { |l| l.length }.max + 10
+    html(@original_file_contents, avg_execution_times, @annotation_data, max_line_length, Markaby::Builder.new)
+  end
 
-    ad = @annotation_data
-    line_times = lines.each_with_index.map { |_, i| avg_execution_time(i) }
-    mab = Markaby::Builder.new
-
+  def html(lines, line_times, ad, max_length, mab)
     mab.html do
       mab.head do
         mab.title "#{@original_filename} analysis"
@@ -58,8 +55,9 @@ class ProfileView
     mab.to_s
   end
 
-  def avg_execution_time(line_number)
-    data = @annotation_data[line_number]
+  def avg_execution_times
+    @original_file_contents.each_with_index.map { |_, line_number|
+      data = @annotation_data[line_number]
     if data && data[:execution_count] > 0
       tet = total_execution_time(data)
       if tet && tet < 0
@@ -69,6 +67,11 @@ class ProfileView
     else
       -1
     end
+    }
+  end
+
+  def max_line_length
+    @original_file_contents.map(&:length).max + 10
   end
 
   def total_execution_time(data)
