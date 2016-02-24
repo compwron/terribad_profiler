@@ -16,12 +16,15 @@ class Parser
         annotation_data[ln] ||= default_data
         key = line.include?(BEFORE) ? :time_before_line : :time_after_line
         annotation_data[ln][key] << time(line)
-        annotation_data[ln][:execution_count] += 1 if key == :time_after_line
       }
+      set_execution_counts(annotation_data)
     }
-    # broken
-    # use this  v[:execution_count] = [v[:time_before_line].count, v[:time_after_line].count].min
+  end
 
+  def set_execution_counts(annotation_data)
+    annotation_data.each {|line_number, data|
+      data[:execution_count] = [data[:time_before_line].count, data[:time_after_line].count].min
+    }
   end
 
   def time(line)

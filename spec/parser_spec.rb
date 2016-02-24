@@ -4,7 +4,7 @@ describe Parser do
   context "with empty data" do
     let(:data) { [] }
     it "" do
-      expect(subject).to eq nil
+      expect(subject).to eq({})
     end
   end
 
