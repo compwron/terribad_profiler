@@ -31,7 +31,6 @@ class ProfileView
         }
       end
     end
-    mab
   end
 
   def analysis_title
@@ -40,8 +39,8 @@ class ProfileView
 
   def data_lines_with_colors
     @original_file_contents.each_with_index.map { |line, line_number|
-      line = replace_leading_whitespace_with_dots(line)
-
+      [replace_leading_whitespace_with_dots(line), line_number]
+    }.map { |line, line_number|
       execution_count = (@annotation_data[line_number] || {})[:execution_count] || 0
       color = execution_count > 0 ? "green" : "red"
       line = "#{line.ljust(max_line_length, ".")} execution count: #{execution_count} avg_execution_time: #{avg_execution_times[line_number]}"
@@ -50,19 +49,14 @@ class ProfileView
   end
 
   def replace_leading_whitespace_with_dots(line)
-    leading_space_count = line[/\A */].size
-
     line.chars.each_with_index.map { |c, index|
-      index < leading_space_count ? "." : c
+      index < line[/\A */].size ? "." : c
     }.join("")
   end
 
   def leading_whitespace_size(line)
     0.upto(line[/\A */].size - 1).each { |i| line[i] = "." }
   end
-
-
-
 
   def avg_execution_times
     @original_file_contents.each_with_index.map { |_, line_number|
