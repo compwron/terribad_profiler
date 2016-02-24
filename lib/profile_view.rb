@@ -13,7 +13,11 @@ class ProfileView
   private
 
   def generate_html
-    html(@original_file_contents, avg_execution_times, @annotation_data, max_line_length, Markaby::Builder.new)
+    html(@original_file_contents,
+         avg_execution_times,
+         @annotation_data,
+         max_line_length,
+         Markaby::Builder.new)
   end
 
   def html(lines, line_times, ad, max_length, mab)
@@ -58,15 +62,15 @@ class ProfileView
   def avg_execution_times
     @original_file_contents.each_with_index.map { |_, line_number|
       data = @annotation_data[line_number]
-    if data && data[:execution_count] > 0
-      tet = total_execution_time(data)
-      if tet && tet < 0
-        tet = tet * -1
+      if data && data[:execution_count] > 0
+        tet = total_execution_time(data)
+        if tet && tet < 0
+          tet = tet * -1
+        end
+        "%.10f" % (tet / data[:execution_count])
+      else
+        -1
       end
-      "%.10f" % (tet / data[:execution_count])
-    else
-      -1
-    end
     }
   end
 
