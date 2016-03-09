@@ -58,11 +58,24 @@ class ProfileView
     0.upto(line[/\A */].size - 1).each { |i| line[i] = "." }
   end
 
+  def total_execution_time
+    @annotation_data.each {|line_number, data|
+
+    }
+  end
+
   def avg_execution_times
     @original_file_contents.each_with_index.map { |_, line_number|
       data = @annotation_data[line_number]
       if data && data[:execution_count] > 0
-        tet = total_execution_time(data)
+        tet = ((data[:time_before_line] || []).sort.zip((data[:time_after_line] || []).sort) || []).map { |pair|
+          if pair.include?(nil)
+            0
+          else
+            pair.first - pair.last
+          end
+
+        }.inject(&:+)
         if tet && tet < 0
           tet = tet * -1
         end
@@ -75,16 +88,5 @@ class ProfileView
 
   def max_line_length
     @max_line_length ||= @original_file_contents.map(&:length).max + 10
-  end
-
-  def total_execution_time(data)
-    ((data[:time_before_line] || []).sort.zip((data[:time_after_line] || []).sort) || []).map { |pair|
-      if pair.include?(nil)
-        0
-      else
-        pair.first - pair.last
-      end
-
-    }.inject(&:+)
   end
 end
